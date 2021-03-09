@@ -81,7 +81,7 @@ def add_workout
         if weight == "yes" 
             weightb = true
             puts "gainz"
-            # call add_weights method
+            # call add_lifts method
         elsif
             puts "next time"
             weightb = false
@@ -96,9 +96,16 @@ def add_workout
             puts "next time"
             cardiob = false
         end 
-        #binding.pry
+        # binding.pry
         Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id , weights: weightb, cardio: cardiob )
-        binding.pry
+#if they selected that they did do weights then we take them to a method where they can create a new Weight class instance and the same for cardio
+        if weightb == true
+            add_lifts
+        end
+        if cardiob == true
+            add_cardio
+        end
+
 end
 
 def update_workout
@@ -106,9 +113,25 @@ def update_workout
     workout_id = prompt.ask('What workout would you like to update?')
 end
 
-# def add_weights
-#     Weight.create(name: ,workout_id: ,lifter_id: ,first_reps: ,first_weight: ,second_reps: ,second_weight: ,third_reps: ,third_weight:)
-# end
+def add_lifts
+    #puts "sorry this feature isnt ready yet"
+    prompt = TTY::Prompt.new 
+    weight_name = prompt.ask('What exercise(weights) did you preform?')
+    st_reps = prompt.ask('How many reps for your first set?').to_i
+    st_weight = prompt.ask('What weight did you use for your first set').to_i
+    nd_reps = prompt.ask("How many reps for your second set?").to_i
+    nd_weight = prompt.ask('What weight did you use for your second set').to_i
+    rd_reps = prompt.ask("How many reps for your third set?").to_i
+    rd_weight = prompt.ask('What weight did you use for your third set').to_i
+    #binding.pry
+    #Weight.create(name: ,workout_id: ,lifter_id: ,first_reps: ,first_weight: ,second_reps: ,second_weight: ,third_reps: ,third_weight:)
+end
+
+def add_cardio
+    puts "sorry this feature isnt ready yet"
+    prompt = TTY::Prompt.new 
+    prompt.ask('What exercise(cardio) did you preform?')
+end
 
 
 

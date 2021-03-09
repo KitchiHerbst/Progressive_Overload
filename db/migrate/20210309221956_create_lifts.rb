@@ -1,9 +1,7 @@
-class CreateWeights < ActiveRecord::Migration[6.1]
+class CreateLifts < ActiveRecord::Migration[6.1]
   def change
-    create_table :weights do |t|
+    create_table :lifts do |t|
       t.string :name
-      t.integer :workout_id
-      t.integer :lifter_id
       t.integer :first_reps
       t.integer :first_weight
       t.integer :second_reps

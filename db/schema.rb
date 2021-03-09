@@ -10,15 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_08_202021) do
-
-  create_table "cardio", force: :cascade do |t|
-    t.string "name"
-    t.integer "workout_id"
-    t.integer "lifter_id"
-    t.float "distance"
-    t.float "time"
-  end
+ActiveRecord::Schema.define(version: 2021_03_09_223631) do
 
   create_table "gyms", force: :cascade do |t|
     t.string "name"
@@ -33,10 +25,8 @@ ActiveRecord::Schema.define(version: 2021_03_08_202021) do
     t.string "gender"
   end
 
-  create_table "weights", force: :cascade do |t|
+  create_table "lifts", force: :cascade do |t|
     t.string "name"
-    t.integer "workout_id"
-    t.integer "lifter_id"
     t.integer "first_reps"
     t.integer "first_weight"
     t.integer "second_reps"
@@ -45,13 +35,14 @@ ActiveRecord::Schema.define(version: 2021_03_08_202021) do
     t.integer "third_weight"
   end
 
+  create_table "workout_types", force: :cascade do |t|
+    t.integer "workout_id"
+    t.integer "lifter_id"
+  end
+
   create_table "workouts", force: :cascade do |t|
     t.integer "lifter_id"
     t.integer "gym_id"
-    t.datetime "start"
-    t.datetime "end"
-    t.boolean "weights"
-    t.boolean "cardio"
   end
 
 end
