@@ -96,7 +96,7 @@ def add_workout
             puts "next time"
             cardiob = false
         end 
-        binding.pry
+        #binding.pry
         Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id , weights: weightb, cardio: cardiob )
         binding.pry
 end
