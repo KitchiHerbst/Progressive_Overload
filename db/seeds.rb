@@ -13,6 +13,8 @@ w2 = Workout.create(lifter_id: triston.id, gym_id: laf.id)
 w3 = Workout.create(lifter_id: jose.id , gym_id: laf.id)
 
 
-
+jose_bench = Weight.create(name:"Bench", workout_id: w1.id, first_reps:12, first_weight:145, second_reps:12, second_weight:145,third_reps:10 ,third_weight:155)
+triston_squat = Weight.create(name:"Squat", workout_id: w2.id, first_reps:10, first_weight:185, second_reps:10, second_weight:185, third_reps:8, third_weight:195)
+jose_curl = Weight.create(name:"Arm Curls", workout_id:w3.id, first_reps:13, first_weight:20, second_reps:12, second_weight:20, third_reps:10, third_weight:25)
 
 
