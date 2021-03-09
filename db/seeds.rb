@@ -16,3 +16,4 @@ w3 = Workout.create(lifter_id: jose.id , gym_id: laf.id)
 
 
 
+
