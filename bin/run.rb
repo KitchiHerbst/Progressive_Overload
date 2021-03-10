@@ -123,9 +123,10 @@ end
 #gives the lifter a list of all the workouts they have done
 #doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
+    prompt = TTY::Prompt.new 
     var = Workout.all.select {|workout|workout.lifter == $lifter_object}
-    puts var.each {|workout_object|
-    puts workout_object.id
+    var.each {|workout_object|
+    puts workout_object.name
     }
     options_after_add_lifts
 end
@@ -133,7 +134,7 @@ end
 def add_workout
     prompt = TTY::Prompt.new 
     gym_names = Gym.all.map {|gym|gym.name}
-    workout_name = prompt.ask('What would you liek to call this workout?')
+    workout_name = prompt.ask('What would you like to call this workout?')
     gym = prompt.ask('What gym did you go to?') 
     #setting the $gym_object variable equal to the gym object that has the name of what the lifter puts as the gym they went to
     $gym_object = Gym.all.find {|gym_object|gym_object.name==gym}
@@ -174,10 +175,10 @@ def options_after_add_lifts
         elsif var == "view_all_workouts"
             view_all_workouts
         elsif var == "view_this_workouts_lifts"
-            variable = prompt.ask("Please enter the workout id").to_i
-            #binding.pry
-            if variable == Workout.all.find {|workout|workout.id==variable}.id
-                all_lifts_associated_with_workout(variable)
+            variable = prompt.ask("Please enter the workout name").to_s
+            if variable == Workout.all.find {|workout|variable == workout.name}.name
+                var_id = Workout.all.find {|workout|variable == workout.name}.id 
+                all_lifts_associated_with_workout(var_id)
             else
                 puts "this workout id does not match any in our records"
                 options_after_add_lifts
