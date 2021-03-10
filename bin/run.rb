@@ -90,7 +90,7 @@ end
 #doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
     var = Workout.all.select {|workout|workout.lifter == $lifter_object}
-    puts var
+    puts var 
     options_after_add_lifts
 end
 
@@ -129,13 +129,22 @@ end
 
 def options_after_add_lifts
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do?", %w(add_lift update_workout view_all_workouts exit))
+    var = prompt.select("What would you like to do?", %w(add_lift update_workout view_all_workouts view_this_workouts_lifts exit))
         if var == "add_lift"
             add_lifts
         elsif var == "update_workout"
             update_workout
         elsif var == "view_all_workouts"
             view_all_workouts
+        elsif var == "view_this_workouts_lifts"
+            variable = prompt.ask("Please enter the workout id").to_i
+            #binding.pry
+            if variable == Workout.all.find {|workout|workout.id==variable}.id
+                all_lifts_associated_with_workout(variable)
+            else
+                puts "this workout id does not match any in our records"
+                options_after_add_lifts
+            end
         else
             exit!
         end
@@ -147,7 +156,18 @@ def update_workout
 end
 
 
-
+def all_lifts_associated_with_workout(workout_id)
+    workouttypes = WorkoutType.all.select {|workouttype|workouttype.workout_id == workout_id}
+    array = workouttypes.map {|v|v.lift_id}
+    puts Lift.all.select {|lift_object|array.include?(lift_object.id)}
+    # lift_array = []
+    #     #array has an array of lift ids we want to display all the lifts from Lift.all that have those ids
+    #     Lift.all.each do |lift_object|
+    #         if array.include?(lift_object.id)
+    #             lift_array << lift_object
+    #         end
+    #     end  
+end
 
 
 
