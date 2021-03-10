@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2021_03_09_223631) do
 
   create_table "workout_types", force: :cascade do |t|
     t.integer "workout_id"
-    t.integer "lifter_id"
+    t.integer "lift_id"
   end
 
   create_table "workouts", force: :cascade do |t|
