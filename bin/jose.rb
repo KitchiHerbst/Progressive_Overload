@@ -10,16 +10,18 @@
 # end
 
 
-# result = prompt.collect do
-#     key(:name).ask('Name?')
-  
-#     key(:age).ask('Age?', convert: :int)
-  
-#     key(:address) do
-#       key(:street).ask('Street?', required: true)
-#       key(:city).ask('City?')
-#       key(:zip).ask('Zip?', validate: /\A\d{3}\Z/)
-#     end
-#   end
-  # =>
-  # {:name => "Piotr", :age => 30, :address => {:street => "Street", :city => "City", :zip => "123"}}
+def add_gym
+  gym_name = Gym.all.map {|gym| gym.name}
+  prompt = TTY::Prompt.new
+  result = prompt.collect do
+     name = key(:name).ask('What is the name of the gym you want to add?')
+  if gym_name.include?(name)
+      puts "This gym is already in your account."
+      initial_options
+  end
+      key(:location).ask('What is your gyms location?')
+  end
+      $gym_object = Gym.create(name: result[:name], location: result[:location])
+      binding.pry
+      
+end

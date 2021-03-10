@@ -38,6 +38,17 @@ def login_prompt
     end
 end
 
+def sign_up
+        prompt = TTY::Prompt.new
+        result = prompt.collect do
+            key(:name).ask('What is your Name?')
+            key(:age).ask('How old are you?', convert: :int)
+            key(:height).ask('How tall are you in inches?', convert: :int)
+            key(:weight).ask('How much do you weight in lbs?', convert: :int)
+            key(:gender).ask('Gender?')
+        end
+    end
+
 #we need to be able to retreive the lifter object when they pass in the Lifter.name during the prompt 
 #so we can access the other attributes for the lifter
 def login
@@ -58,17 +69,35 @@ end
 def initial_options
     # binding.pry
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do", %w(add_workout update_workout view_all_workouts exit))
+    var = prompt.select("What would you like to do", %w(add_workout update_workout view_all_workouts add_gym exit))
         if var == "add_workout"
             add_workout
         elsif var == "update_workout"
             puts "sorry this feature is currently unavailable"
             initial_options
-        elsif var == view_all_workouts
+        elsif var == "view_all_workouts"
             view_all_workouts
+        elsif var == "add_gym"
+            add_gym
         elsif exit
             exit!
         end
+end
+
+def add_gym
+    gym_name = Gym.all.map {|gym| gym.name}
+    prompt = TTY::Prompt.new
+    result = prompt.collect do
+       name = key(:name).ask('What is the name of the gym you want to add?')
+    if gym_name.include?(name)
+        puts "This gym is already in your account."
+        initial_options
+    end
+        key(:location).ask('What is your gyms location?')
+    end
+        $gym_object = Gym.create(name: result[:name], location: result[:location])
+        binding.pry
+        
 end
 #gives the lifter a list of all the workouts they have done
 #doesnt work properly only puts the object id when we want all of the variables associated with it
@@ -148,4 +177,4 @@ greeting
 login_prompt
 #login
 
-#initial_options
+# initial_options
