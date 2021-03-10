@@ -54,21 +54,6 @@ def sign_up
         initial_options
 end
 
-
-# def sign_up
-#         prompt = TTY::Prompt.new
-#         result = prompt.collect do
-#             key(:name).ask('What is your Name?')
-#             key(:age).ask('How old are you?', convert: :int)
-#             key(:height).ask('How tall are you in inches?', convert: :int)
-#             key(:weight).ask('How much do you weight in lbs?', convert: :int)
-#             key(:gender).ask('Gender?')
-#         end
-#     end
-
-#we need to be able to retreive the lifter object when they pass in the Lifter.name during the prompt 
-#so we can access the other attributes for the lifter
-
 def login
     lifter_name = Lifter.all.map {|lifter|lifter.name}
     prompt = TTY::Prompt.new 
@@ -103,7 +88,6 @@ def initial_options
         end
 end
 
-
 def add_gym
     gym_name = Gym.all.map {|gym| gym.name}
     prompt = TTY::Prompt.new
@@ -115,37 +99,46 @@ def add_gym
     end
         key(:location).ask('What is your gyms location?')
     end
-        $gym_object = Gym.create(name: result[:name], location: result[:location])
-        binding.pry
-        
+        $gym_object = Gym.create(name: result[:name], location: result[:location])  
+        initial_options   
 end
 
-#gives the lifter a list of all the workouts they have done
-#doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
+    prompt = TTY::Prompt.new 
     var = Workout.all.select {|workout|workout.lifter == $lifter_object}
-    puts var 
+    var.each {|workout_object|
+    puts workout_object.name
+    }
+    select_workout
     options_after_add_lifts
 end
 
 def add_workout
     prompt = TTY::Prompt.new 
     gym_names = Gym.all.map {|gym|gym.name}
+    workout_name = prompt.ask('What would you like to call this workout?')
     gym = prompt.ask('What gym did you go to?') 
     #setting the $gym_object variable equal to the gym object that has the name of what the lifter puts as the gym they went to
     $gym_object = Gym.all.find {|gym_object|gym_object.name==gym}
     if gym_names.include?(gym)
-        puts "good choice"
+        puts "Great Choice"
+        $workout_object = Workout.create(name: workout_name, lifter_id: $lifter_object.id , gym_id: $gym_object.id)
+        add_lifts
     else
-        exit
+        unknown_gym = prompt.select("this isnt a gym we have on file would you like to create a new gym?", %w(yes no))
+        if unknown_gym == "yes"
+            add_gym
+        else
+            exit!
+        end
     end
-    $workout_object = Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id)
-    add_lifts
-        #binding.pry
-    #take them to add_lifts method to enter lifts associated with this workouttype
 end
 
 def add_lifts
+    if $workout_object == nil
+        puts "must select a workout or create a new workout"
+        initial_options
+    else
     prompt = TTY::Prompt.new 
     lift_name = prompt.ask('What exercise did you preform?')
     st_reps = prompt.ask('How many reps for your first set?').to_i
@@ -158,6 +151,7 @@ def add_lifts
     first_weight: st_weight,second_reps: nd_reps,second_weight: nd_weight,third_reps: rd_reps,third_weight: rd_weight)
     $workout_type_object = WorkoutType.create(workout_id: $workout_object.id,lift_id: $lift_object.id)
     options_after_add_lifts
+    end
     #binding.pry
 end
 
@@ -171,13 +165,11 @@ def options_after_add_lifts
         elsif var == "view_all_workouts"
             view_all_workouts
         elsif var == "view_this_workouts_lifts"
-            variable = prompt.ask("Please enter the workout id").to_i
-            #binding.pry
-            if variable == Workout.all.find {|workout|workout.id==variable}.id
-                all_lifts_associated_with_workout(variable)
-            else
-                puts "this workout id does not match any in our records"
-                options_after_add_lifts
+            b = prompt.select("Is the workout you want to see #{$workout_object.name}", %w(yes no))
+            if b == "yes"
+                all_lifts_associated_with_workout($workout_object.id)
+            elsif b == "no"
+                select_workout
             end
         else
             exit!
@@ -189,23 +181,31 @@ def update_workout
     workout_id = prompt.ask('What workout would you like to update?')
 end
 
-
 def all_lifts_associated_with_workout(workout_id)
     workouttypes = WorkoutType.all.select {|workouttype|workouttype.workout_id == workout_id}
     array = workouttypes.map {|v|v.lift_id}
-    puts Lift.all.select {|lift_object|array.include?(lift_object.id)}
-    # lift_array = []
-    #     #array has an array of lift ids we want to display all the lifts from Lift.all that have those ids
-    #     Lift.all.each do |lift_object|
-    #         if array.include?(lift_object.id)
-    #             lift_array << lift_object
-    #         end
-    #     end  
+    lift_array = []
+        Lift.all.each do |lift_object|
+            if array.include?(lift_object.id)
+                lift_array << lift_object
+            end
+        end  
+        lift_array.each {|lift|print "LIFT NAME #{lift.name}, 1ST SET REPS #{lift.first_reps}, WEIGHT #{lift.first_weight}, 2ND SET REPS #{lift.second_reps}, WEIGHT #{lift.second_weight}, 3RD SET REPS #{lift.third_reps}, WEIGHT #{lift.third_weight}\n"}  
+        initial_options
 end
 
-
-
-
+def select_workout
+    prompt = TTY::Prompt.new
+    var = Workout.all.select {|workout|workout.lifter == $lifter_object} 
+    var_name = var.map {|workout|workout.name}
+    b = prompt.select("What workout do you want to select?", var_name)
+    var.each do |work|
+        if b == work.name
+            $workout_object = work 
+        end
+    end
+    options_after_add_lifts
+end
 
 
 

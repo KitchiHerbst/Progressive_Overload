@@ -10,9 +10,9 @@ triston = Lifter.create(name: "Triston", height: 71, weight: 227, age: 23, gende
 laf = Gym.create(name:"LAFitness", location: "123 Whitestone")
 pf = Gym.create(name:"Planet Fitness", location: "456 New York")
 
-w1 = Workout.create(lifter_id: jose.id, gym_id: pf.id)
-w2 = Workout.create(lifter_id: triston.id, gym_id: laf.id)
-w3 = Workout.create(lifter_id: jose.id , gym_id: laf.id) 
+w1 = Workout.create(name: "pumping iron", lifter_id: jose.id, gym_id: pf.id)
+w2 = Workout.create(name: "1",lifter_id: triston.id, gym_id: laf.id)
+w3 = Workout.create(name: "2",lifter_id: jose.id , gym_id: laf.id) 
 
 WorkoutType.create()
 
