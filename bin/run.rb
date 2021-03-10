@@ -109,6 +109,7 @@ def view_all_workouts
     var.each {|workout_object|
     puts workout_object.name
     }
+    select_workout
     options_after_add_lifts
 end
 
@@ -164,14 +165,11 @@ def options_after_add_lifts
         elsif var == "view_all_workouts"
             view_all_workouts
         elsif var == "view_this_workouts_lifts"
-            variable = prompt.ask("Please enter the workout name")
-            var_base = Workout.all.find {|workout|variable == workout.name}
-            #binding.pry
-            if variable == var_base.name
-                all_lifts_associated_with_workout(var_base.id)
-            else
-                puts "this workout name does not match any in our records"
-                options_after_add_lifts
+            b = prompt.select("Is the workout you want to see #{$workout_object.name}", %w(yes no))
+            if b == "yes"
+                all_lifts_associated_with_workout($workout_object.id)
+            elsif b == "no"
+                select_workout
             end
         else
             exit!
@@ -196,11 +194,18 @@ def all_lifts_associated_with_workout(workout_id)
         initial_options
 end
 
-
-
-
-
-
+def select_workout
+    prompt = TTY::Prompt.new
+    var = Workout.all.select {|workout|workout.lifter == $lifter_object} 
+    var_name = var.map {|workout|workout.name}
+    b = prompt.select("What workout do you want to select?", var_name)
+    var.each do |work|
+        if b == work.name
+            $workout_object = work 
+        end
+    end
+    options_after_add_lifts
+end
 
 
 

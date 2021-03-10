@@ -30,8 +30,9 @@ workouts -> weight
 
 
 <!-- Stretch goals -->
+
 user is able to update workouttypes and lifts
 user is able to set goals
 share progress with another user
-get recommended weight for a lift
+get recommended weight for a lift maybe use a random number
 user is able to set a start time and end time
