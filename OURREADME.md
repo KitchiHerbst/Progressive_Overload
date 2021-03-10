@@ -26,7 +26,7 @@ user is able to retrieve their previous workouts
 user is able to update workouttypes and lifts
 
 <!-- Jose -->
-user is able to create a profile
+<!-- user is able to create a profile -->
 user is able to add multiples gyms
 
 

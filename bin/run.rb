@@ -30,16 +30,30 @@ def login_prompt
         login #takes you to the login method
     end
     if var == "sign_up"
-        sign_up
-        # puts "sorry this feature is currently unavailable"
-        login_prompt #takes you back to the login_prompt method for now
+        sign_up #takes you to a sign up method
     else
-        exit!
+        exit
     end
 end
 
-#we need to be able to retreive the lifter object when they pass in the Lifter.name during the prompt 
-#so we can access the other attributes for the lifter
+def sign_up
+    lifter_name = Lifter.all.map {|lifter|lifter.name}
+    prompt = TTY::Prompt.new
+    result = prompt.collect do
+        name = key(:name).ask('What do you want your username to be?')
+            if lifter_name.include?(name)
+                puts "this name is already associated with an account"
+                login_prompt
+            end
+        key(:age).ask('How old are you?', convert: :int)
+        key(:height).ask('How tall are you in inches?', convert: :int)
+        key(:weight).ask('How much do you weight in lbs?', convert: :int)
+        key(:gender).ask('Gender?')
+    end
+        $lifter_object = Lifter.create(name: result[:name], age: result[:age], height: result[:height], weight: result[:weight], gender: result[:gender])    
+        initial_options
+end
+
 def login
     lifter_name = Lifter.all.map {|lifter|lifter.name}
     prompt = TTY::Prompt.new 
@@ -50,9 +64,10 @@ def login
         puts "Welcome #{username}!"
         initial_options #takes you to the initial options method
     else
-        exit! #if you put in an invalid username it exits the program
+        puts "sorry that username was not found"
+        login_prompt
+         #if you put in an invalid username it sends you back to the login_prompt method
     end
-    #binding.pry
 end
 
 def initial_options
@@ -64,12 +79,13 @@ def initial_options
         elsif var == "update_workout"
             puts "sorry this feature is currently unavailable"
             initial_options
-        elsif var == view_all_workouts
+        elsif var == "view_all_workouts"
             view_all_workouts
-        elsif exit
+        else
             exit!
         end
 end
+
 #gives the lifter a list of all the workouts they have done
 #doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
@@ -93,11 +109,6 @@ def add_workout
     add_lifts
         #binding.pry
     #take them to add_lifts method to enter lifts associated with this workouttype
-end
-
-def update_workout
-    prompt = TTY::Prompt.new 
-    workout_id = prompt.ask('What workout would you like to update?')
 end
 
 def add_lifts
@@ -130,6 +141,11 @@ def options_after_add_lifts
         end
 end
 
+def update_workout
+    prompt = TTY::Prompt.new 
+    workout_id = prompt.ask('What workout would you like to update?')
+end
+
 
 
 
@@ -146,6 +162,7 @@ end
 greeting
 
 login_prompt
+
 #login
 
 #initial_options
