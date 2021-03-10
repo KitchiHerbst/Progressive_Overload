@@ -30,7 +30,8 @@ def login_prompt
         login #takes you to the login method
     end
     if var == "sign_up"
-        puts "sorry this feature is currently unavailable"
+        sign_up
+        # puts "sorry this feature is currently unavailable"
         login_prompt #takes you back to the login_prompt method for now
     else
         exit!
