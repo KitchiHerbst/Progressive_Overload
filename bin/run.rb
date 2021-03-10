@@ -14,6 +14,9 @@ puts "HELLO WORLD"
 
 $lifter_object = nil
 $gym_object = nil 
+$workout_object = nil
+$lift_object = nil
+$workout_type_object = nil
 
 def greeting
     name = Artii::Base.new :font => 'slant'
@@ -54,15 +57,24 @@ end
 def initial_options
     # binding.pry
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do", %w(add_workout update_workout exit))
+    var = prompt.select("What would you like to do", %w(add_workout update_workout view_all_workouts exit))
         if var == "add_workout"
             add_workout
         elsif var == "update_workout"
             puts "sorry this feature is currently unavailable"
             initial_options
-        else 
+        elsif var == view_all_workouts
+            view_all_workouts
+        elsif exit
             exit!
         end
+end
+#gives the lifter a list of all the workouts they have done
+#doesnt work properly only puts the object id when we want all of the variables associated with it
+def view_all_workouts
+    var = Workout.all.select {|workout|workout.lifter == $lifter_object}
+    puts var
+    options_after_add_lifts
 end
 
 def add_workout
@@ -76,36 +88,10 @@ def add_workout
     else
         exit
     end
-    weight = prompt.ask('Did you lift weights?')
-    weightb = nil
-        if weight == "yes" 
-            weightb = true
-            puts "gainz"
-            # call add_lifts method
-        elsif
-            puts "next time"
-            weightb = false
-        end
-    cardio = prompt.ask('Did you do cardio?')
-        cardiob = nil
-        if cardio == "yes"
-            cardiob = true
-            puts "nice"
-            #call add_cardio method
-        elsif
-            puts "next time"
-            cardiob = false
-        end 
-        # binding.pry
-        Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id , weights: weightb, cardio: cardiob )
-#if they selected that they did do weights then we take them to a method where they can create a new Weight class instance and the same for cardio
-        if weightb == true
-            add_lifts
-        end
-        if cardiob == true
-            add_cardio
-        end
-
+    $workout_object = Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id)
+    add_lifts
+        #binding.pry
+    #take them to add_lifts method to enter lifts associated with this workouttype
 end
 
 def update_workout
@@ -114,23 +100,33 @@ def update_workout
 end
 
 def add_lifts
-    #puts "sorry this feature isnt ready yet"
     prompt = TTY::Prompt.new 
-    weight_name = prompt.ask('What exercise(weights) did you preform?')
+    lift_name = prompt.ask('What exercise did you preform?')
     st_reps = prompt.ask('How many reps for your first set?').to_i
     st_weight = prompt.ask('What weight did you use for your first set').to_i
     nd_reps = prompt.ask("How many reps for your second set?").to_i
     nd_weight = prompt.ask('What weight did you use for your second set').to_i
     rd_reps = prompt.ask("How many reps for your third set?").to_i
     rd_weight = prompt.ask('What weight did you use for your third set').to_i
+    $lift_object = Lift.create(name: lift_name ,first_reps: st_reps,
+    first_weight: st_weight,second_reps: nd_reps,second_weight: nd_weight,third_reps: rd_reps,third_weight: rd_weight)
+    $workout_type_object = WorkoutType.create(workout_id: $workout_object.id,lift_id: $lift_object.id)
+    options_after_add_lifts
     #binding.pry
-    #Weight.create(name: ,workout_id: ,lifter_id: ,first_reps: ,first_weight: ,second_reps: ,second_weight: ,third_reps: ,third_weight:)
 end
 
-def add_cardio
-    puts "sorry this feature isnt ready yet"
+def options_after_add_lifts
     prompt = TTY::Prompt.new 
-    prompt.ask('What exercise(cardio) did you preform?')
+    var = prompt.select("What would you like to do?", %w(add_lift update_workout view_all_workouts exit))
+        if var == "add_lift"
+            add_lifts
+        elsif var == "update_workout"
+            update_workout
+        elsif var == "view_all_workouts"
+            view_all_workouts
+        else
+            exit!
+        end
 end
 
 
