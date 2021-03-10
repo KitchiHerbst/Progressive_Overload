@@ -124,13 +124,16 @@ end
 #doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
     var = Workout.all.select {|workout|workout.lifter == $lifter_object}
-    puts var 
+    puts var.each {|workout_object|
+    puts workout_object.id
+    }
     options_after_add_lifts
 end
 
 def add_workout
     prompt = TTY::Prompt.new 
     gym_names = Gym.all.map {|gym|gym.name}
+    workout_name = prompt.ask('What would you liek to call this workout?')
     gym = prompt.ask('What gym did you go to?') 
     #setting the $gym_object variable equal to the gym object that has the name of what the lifter puts as the gym they went to
     $gym_object = Gym.all.find {|gym_object|gym_object.name==gym}
@@ -139,7 +142,7 @@ def add_workout
     else
         exit
     end
-    $workout_object = Workout.create(lifter_id: $lifter_object.id , gym_id: $gym_object.id)
+    $workout_object = Workout.create(name: workout_name, lifter_id: $lifter_object.id , gym_id: $gym_object.id)
     add_lifts
         #binding.pry
     #take them to add_lifts method to enter lifts associated with this workouttype
