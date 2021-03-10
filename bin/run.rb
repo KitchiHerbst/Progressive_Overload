@@ -30,27 +30,45 @@ def login_prompt
         login #takes you to the login method
     end
     if var == "sign_up"
-        sign_up
-        # puts "sorry this feature is currently unavailable"
-        login_prompt #takes you back to the login_prompt method for now
+        sign_up #takes you to a sign up method
     else
-        exit!
+        exit
     end
 end
 
 def sign_up
-        prompt = TTY::Prompt.new
-        result = prompt.collect do
-            key(:name).ask('What is your Name?')
-            key(:age).ask('How old are you?', convert: :int)
-            key(:height).ask('How tall are you in inches?', convert: :int)
-            key(:weight).ask('How much do you weight in lbs?', convert: :int)
-            key(:gender).ask('Gender?')
-        end
+    lifter_name = Lifter.all.map {|lifter|lifter.name}
+    prompt = TTY::Prompt.new
+    result = prompt.collect do
+        name = key(:name).ask('What do you want your username to be?')
+            if lifter_name.include?(name)
+                puts "this name is already associated with an account"
+                login_prompt
+            end
+        key(:age).ask('How old are you?', convert: :int)
+        key(:height).ask('How tall are you in inches?', convert: :int)
+        key(:weight).ask('How much do you weight in lbs?', convert: :int)
+        key(:gender).ask('Gender?')
     end
+        $lifter_object = Lifter.create(name: result[:name], age: result[:age], height: result[:height], weight: result[:weight], gender: result[:gender])    
+        initial_options
+end
+
+
+# def sign_up
+#         prompt = TTY::Prompt.new
+#         result = prompt.collect do
+#             key(:name).ask('What is your Name?')
+#             key(:age).ask('How old are you?', convert: :int)
+#             key(:height).ask('How tall are you in inches?', convert: :int)
+#             key(:weight).ask('How much do you weight in lbs?', convert: :int)
+#             key(:gender).ask('Gender?')
+#         end
+#     end
 
 #we need to be able to retreive the lifter object when they pass in the Lifter.name during the prompt 
 #so we can access the other attributes for the lifter
+
 def login
     lifter_name = Lifter.all.map {|lifter|lifter.name}
     prompt = TTY::Prompt.new 
@@ -61,9 +79,10 @@ def login
         puts "Welcome #{username}!"
         initial_options #takes you to the initial options method
     else
-        exit! #if you put in an invalid username it exits the program
+        puts "sorry that username was not found"
+        login_prompt
+         #if you put in an invalid username it sends you back to the login_prompt method
     end
-    #binding.pry
 end
 
 def initial_options
@@ -80,9 +99,10 @@ def initial_options
         elsif var == "add_gym"
             add_gym
         elsif exit
-            exit!
+           exit!
         end
 end
+
 
 def add_gym
     gym_name = Gym.all.map {|gym| gym.name}
@@ -99,11 +119,12 @@ def add_gym
         binding.pry
         
 end
+
 #gives the lifter a list of all the workouts they have done
 #doesnt work properly only puts the object id when we want all of the variables associated with it
 def view_all_workouts
     var = Workout.all.select {|workout|workout.lifter == $lifter_object}
-    puts var
+    puts var 
     options_after_add_lifts
 end
 
@@ -124,11 +145,6 @@ def add_workout
     #take them to add_lifts method to enter lifts associated with this workouttype
 end
 
-def update_workout
-    prompt = TTY::Prompt.new 
-    workout_id = prompt.ask('What workout would you like to update?')
-end
-
 def add_lifts
     prompt = TTY::Prompt.new 
     lift_name = prompt.ask('What exercise did you preform?')
@@ -147,20 +163,45 @@ end
 
 def options_after_add_lifts
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do?", %w(add_lift update_workout view_all_workouts exit))
+    var = prompt.select("What would you like to do?", %w(add_lift update_workout view_all_workouts view_this_workouts_lifts exit))
         if var == "add_lift"
             add_lifts
         elsif var == "update_workout"
             update_workout
         elsif var == "view_all_workouts"
             view_all_workouts
+        elsif var == "view_this_workouts_lifts"
+            variable = prompt.ask("Please enter the workout id").to_i
+            #binding.pry
+            if variable == Workout.all.find {|workout|workout.id==variable}.id
+                all_lifts_associated_with_workout(variable)
+            else
+                puts "this workout id does not match any in our records"
+                options_after_add_lifts
+            end
         else
             exit!
         end
 end
 
+def update_workout
+    prompt = TTY::Prompt.new 
+    workout_id = prompt.ask('What workout would you like to update?')
+end
 
 
+def all_lifts_associated_with_workout(workout_id)
+    workouttypes = WorkoutType.all.select {|workouttype|workouttype.workout_id == workout_id}
+    array = workouttypes.map {|v|v.lift_id}
+    puts Lift.all.select {|lift_object|array.include?(lift_object.id)}
+    # lift_array = []
+    #     #array has an array of lift ids we want to display all the lifts from Lift.all that have those ids
+    #     Lift.all.each do |lift_object|
+    #         if array.include?(lift_object.id)
+    #             lift_array << lift_object
+    #         end
+    #     end  
+end
 
 
 
@@ -175,6 +216,7 @@ end
 greeting
 
 login_prompt
+
 #login
 
 # initial_options
