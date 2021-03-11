@@ -13,8 +13,6 @@ require "colorize"
 #update the cardio/weight tables when a new workout is created 
 #create a new instance of a cardio or weight (lift) assign a workout_id 
 
-#can we add a date to the workout 
-
 $lifter_object = nil
 $gym_object = nil 
 $workout_object = nil
@@ -49,7 +47,7 @@ def greeting
                                       ▒▒▒▒              ▒▒▒▒            
                                     ▒▒▒▒                  ▒▒▒▒    "  .colorize(:red)
 end
-#prompt.select("Let's drink coffee!", ["Login", "Sign Up", "Exit"])
+
 def login_prompt
     prompt = TTY::Prompt.new
     var = prompt.select("Please select an option", ["Login", "Sign Up", "Exit"])
