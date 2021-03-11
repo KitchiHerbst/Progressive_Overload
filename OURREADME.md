@@ -1,5 +1,5 @@
 <!-- Progressive Overload  -->
-allow lifters to keep track of workouts and view them later to know that they increase intensity
+Our app allows lifters to log workouts and review them at a later date, with each workout you can name it and enter the amount of weight and reps you did. Lifters can add multiple lifts to a workout and have many workouts, lifters can add multiple gyms that they go to. New Lifters can create a profile that is unique tho them.
 
 <!-- models -->
 Gym
@@ -10,8 +10,7 @@ weight
 
 <!-- relationships -->
 Gyms -> workouts <- lifters 
-workouts -> cardio
-workouts -> weight
+workouts --> workouttype <-- lifts
 
 <!-- User Stories -->
 
@@ -36,3 +35,5 @@ user is able to set goals
 share progress with another user
 get recommended weight for a lift maybe use a random number
 user is able to set a start time and end time
+
+

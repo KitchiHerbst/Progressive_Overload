@@ -18,32 +18,6 @@ $gym_object = nil
 $workout_object = nil
 $lift_object = nil
 $workout_type_object = nil
-"████                                      ████
- ████  ░░░░░░                      ░░░░░░  ████
- ██████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████████
- ████    ░░                          ░░    ████
- ████    ░░          ░░░░░░          ░░    ████
-         ░░░░      ░░░░░░░░░░      ░░░░        
-         ░░░░      ░░░░░░░░░░      ░░░░        
-           ░░      ░░░░░░░░░░      ░░          
-           ░░░░    ▒▒░░░░░░▒▒    ░░░░          
-           ░░░░░░░░▓▓▒▒▒▒▒▒▓▓░░░░░░░░          
-             ░░░░░░▓▓░░░░░░▓▓░░░░░░            
-               ░░░░▓▓▒▒░░▒▒▓▓░░░░              
-                 ░░▓▓░░░░░░▓▓░░                
-                 ░░▓▓░░░░░░▓▓░░                
-                   ▓▓▓▓░░▓▓▓▓                  
-                   ▓▓▓▓▓▓▓▓▓▓                  
-                   ▓The Pump▓                  
-                 ░░░░▓▓▓▓▓▓░░░░                
-               ░░░░░░▓▓▓▓▓▓░░░░░░              
-               ░░░░          ░░░░              
-             ░░░░░░          ░░░░░░            
-             ░░░░              ░░░░            
-             ▒▒▒▒              ▒▒▒▒            
-           ▒▒▒▒                  ▒▒▒▒    "     
-
-
 
 def greeting
     name = Artii::Base.new :font => 'slant'
@@ -124,18 +98,18 @@ end
 def initial_options
     # binding.pry
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do", ["Add a workout", "Update a Workout", "View all Workouts", "Add a Gym", "List of all Gyms", "Exit"])
+    var = prompt.select("What would you like to do", ["Add a workout", "User Settings", "View all Workouts", "Add a Gym", "List of all Gyms", "Exit"])
         if var == "Add a workout"
             add_workout
-        elsif var == "Update a Workout"
-            puts "Sorry this feature is currently unavailable."
-            initial_options
+        elsif var == "User Settings"
+            user_settings
         elsif var == "View all Workouts"
             view_all_workouts
         elsif var == "Add a Gym"
             add_gym
         elsif var == "List of all Gyms"
             Gym.all.each {|gym| print "NAME #{gym.name}     LOCATION #{gym.location}\n"}
+            initial_options
         elsif "Exit"
            exit!
         end
@@ -267,15 +241,71 @@ def select_workout
     options_after_add_lifts
 end
 
+def user_settings
+    print "Username: #{$lifter_object.name}, Age: #{$lifter_object.age}, Height: #{$lifter_object.height}, Weight: #{$lifter_object.weight}, Gender: #{$lifter_object.gender}\n"
+    #binding.pry
+    prompt = TTY::Prompt.new 
+    var = prompt.select("What would you like to do", ["Change Username", "Change Age",
+         "Change Height", "Change Weight", "Change Gender", "Back", "Exit"])
+         if var == "Change Username"
+            change_user_name
+        elsif var == "Change Age"
+            age = prompt.ask("What is your age?").to_i
+            if age >= 0 
+                $lifter_object.age = age
+                $lifter_object.save
+                user_settings
+            else
+                puts "This is an unacceptable age."
+                user_settings
+            end
+        elsif var == "Change Height"
+            height = prompt.ask("What is your height?").to_i
+            if height >= 0
+                $lifter_object.height = height
+                $lifter_object.save
+                user_settings
+            else
+                puts "This is an unacceptable height."
+                user_settings
+            end
+        elsif var == "Change Weight"
+            weight = prompt.ask("What is your weight?").to_i
+            if weight >= 0
+                $lifter_object.weight = weight
+                $lifter_object.save
+                user_settings
+            else
+                puts "This is an unacceptable weight."
+                user_settings
+            end
+        elsif var == "Change Gender"
+            gender = prompt.ask("What is your gender?")
+            $lifter_object.gender = gender
+            $lifter_object.save 
+            user_settings
+        elsif var == "Back"
+            initial_options
+        elsif "Exit"
+           exit!
+        end
+end
 
-
-
-
+def change_user_name
+    lifter_name = Lifter.all.map {|lifter|lifter.name}
+    prompt = TTY::Prompt.new
+    name = prompt.ask('What do you want your username to be?')
+        if lifter_name.include?(name)
+            puts "This name is already associated with an account."
+            change_user_name
+        else
+            $lifter_object.name = name
+            $lifter_object.save
+        end
+    user_settings
+end
 
 greeting
 
 login_prompt
 
-#login
-
-# initial_options
