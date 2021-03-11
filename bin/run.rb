@@ -13,6 +13,8 @@ require "colorize"
 #update the cardio/weight tables when a new workout is created 
 #create a new instance of a cardio or weight (lift) assign a workout_id 
 
+#can we add a date to the workout 
+
 $lifter_object = nil
 $gym_object = nil 
 $workout_object = nil
@@ -139,7 +141,7 @@ def view_all_workouts
         initial_options
     else 
         var.each {|workout_object|
-        puts workout_object.name
+        print "NAME: #{workout_object.name}, DATE: #{workout_object.date}\n"
         }
         select_workout
         options_after_add_lifts
@@ -150,12 +152,13 @@ def add_workout
     prompt = TTY::Prompt.new 
     gym_names = Gym.all.map {|gym|gym.name}
     workout_name = prompt.ask('What would you like to call this workout?')
+    date = prompt.ask("What date was this workout?")
     gym = prompt.ask('What gym did you go to?') 
     #setting the $gym_object variable equal to the gym object that has the name of what the lifter puts as the gym they went to
     $gym_object = Gym.all.find {|gym_object|gym_object.name==gym}
     if gym_names.include?(gym)
         puts "Great Choice"
-        $workout_object = Workout.create(name: workout_name, lifter_id: $lifter_object.id , gym_id: $gym_object.id)
+        $workout_object = Workout.create(name: workout_name, date: date, lifter_id: $lifter_object.id , gym_id: $gym_object.id)
         add_lifts
     else
         unknown_gym = prompt.select("this isnt a gym we have on file would you like to create a new gym?", ["Yes", "No"])
@@ -308,4 +311,3 @@ end
 greeting
 
 login_prompt
-

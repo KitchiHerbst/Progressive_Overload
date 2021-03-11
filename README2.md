@@ -7,6 +7,7 @@ Progressive Overload is an app that allows lifters to log workouts and review th
 <!-- Install instructions -->
 1. Install Ruby
 2. Bundle Install
+3. rake db:migrate
 <!--                      -->
 
 
@@ -15,6 +16,6 @@ You will need to Sign Up if it is your first time using the application. You wil
 
 Before you can log a workout you must create a gym so that it can be assigned to your workout. If the gym you worked out at is already in the database then you will enter its name when creating a workout.
 
-To create a workout simply select Add Workout
+To create a workout simply select Add Workout which then you will need to name it
 
 
