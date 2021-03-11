@@ -14,7 +14,7 @@ w1 = Workout.create(name: "pumping iron", lifter_id: jose.id, gym_id: pf.id)
 w2 = Workout.create(name: "1",lifter_id: triston.id, gym_id: laf.id)
 w3 = Workout.create(name: "2",lifter_id: jose.id , gym_id: laf.id) 
 
-WorkoutType.create()
+# WorkoutType.create()
 
 
 # jose_bench = Weight.create(name:"Bench", workout_id: w1.id, first_reps:12, first_weight:145, second_reps:12, second_weight:145,third_reps:10 ,third_weight:155)

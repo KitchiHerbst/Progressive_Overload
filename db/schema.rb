@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2021_03_09_223631) do
 
   create_table "workouts", force: :cascade do |t|
     t.string "name"
+    t.string "date"
     t.integer "lifter_id"
     t.integer "gym_id"
   end
