@@ -8,6 +8,7 @@ Progressive Overload is an app that allows lifters to log workouts and review th
 1. Install Ruby
 2. Bundle Install
 3. rake db:migrate
+4. ruby bin/run.rb
 <!--                      -->
 
 

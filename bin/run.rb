@@ -121,7 +121,7 @@ def add_gym
     result = prompt.collect do
        name = key(:name).ask('What is the name of the gym you want to add?')
     if gym_name.include?(name)
-        puts "This gym is already in your account."
+        puts "This gym is already in our database."
         initial_options
     end
         key(:location).ask('What is your gyms location?')
@@ -191,12 +191,9 @@ end
 
 def options_after_add_lifts
     prompt = TTY::Prompt.new 
-    var = prompt.select("What would you like to do?", ["Add a Lift", "Update Workout", "View all Workouts", "View this Workouts Lifts", "Exit"])
+    var = prompt.select("What would you like to do?", ["Add a Lift", "View all Workouts", "View this Workouts Lifts", "Exit"])
         if var == "Add a Lift"
-            add_lifts
-        elsif var == "Update Workout"
-            puts "Sorry this feature is unavailable right now."
-            options_after_add_lifts 
+            add_lifts 
         elsif var == "View all Workouts"
             view_all_workouts
         elsif var == "View this Workouts Lifts"
